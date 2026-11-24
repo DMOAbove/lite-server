@@ -4,7 +4,7 @@
   "description": "Lightweight development node server for serving a web app, providing a fallback for browser history API, loading in the browser, and injecting scripts on the fly.",
   "main": "index.js",
   "scripts": {
-    "test": "eslint *.js lib/*.js && c8 mocha -R spec"
+    "test": "eslint *.js lib/ test/ && c8 mocha -R spec"
   },
   "repository": {
     "type": "git",

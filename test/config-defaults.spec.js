@@ -42,4 +42,15 @@ describe('config-defaults', () => {
     assert.ok(loggerMock.called, 'logger middleware initialized');
     assert.ok(fallbackMock.called, 'fallback middleware initialized');
   });
+
+  it('should configure the history API fallback for index.html', () => {
+    require('../lib/config-defaults');
+
+    assert.ok(
+      fallbackMock.calledWithMatch({
+        index: '/index.html',
+        htmlAcceptHeaders: ['text/html', 'application/xhtml+xml']
+      })
+    );
+  });
 });
