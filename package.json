@@ -26,6 +26,12 @@
   "bin": {
     "lite-server": "./bin/lite-server"
   },
+  "files": [
+    "bin/",
+    "lib/",
+    "index.js",
+    "CHANGELOG.md"
+  ],
   "homepage": "https://github.com/johnpapa/lite-server#readme",
   "dependencies": {
     "browser-sync": "^3.0.4",
