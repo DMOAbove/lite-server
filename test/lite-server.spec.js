@@ -1,6 +1,6 @@
 'use strict';
 const assert = require('assert');
-const mockery = require('mockery');
+const mockRequire = require('./helpers/mock-require');
 const sinon = require('sinon');
 const path = require('path');
 
@@ -14,11 +14,8 @@ describe('lite-server', () => {
   let callbackStub;
 
   beforeEach(() => {
-    mockery.enable({ useCleanCache: true });
-
     browserSyncMethodStubs = { init: sinon.stub() };
     browserSyncMock = sinon.stub().returns(browserSyncMethodStubs);
-    mockery.registerMock('browser-sync', { create: browserSyncMock });
 
     consoleStubs = {
       log: sinon.stub(),
@@ -28,25 +25,17 @@ describe('lite-server', () => {
     configDefaultsMock = {
       server: { middleware: ['m1', 'm2'] }
     };
-    mockery.registerMock('./config-defaults', configDefaultsMock);
 
     callbackStub = sinon.stub();
 
-    mockery.registerAllowables([
-      'path',
-      'lodash',
-      'minimist',
-      '../lib/lite-server',
-      fixture('bs-config-object.js'),
-      fixture('bs-config-function.js'),
-      fixture('bs-config-broken.js'),
-      path.resolve('missing-config')
-    ]);
+    mockRequire.enable({
+      'browser-sync': { create: browserSyncMock },
+      './config-defaults': configDefaultsMock
+    });
   });
 
   afterEach(() => {
-    mockery.deregisterAll();
-    mockery.disable();
+    mockRequire.disable();
   });
 
   it('should merge configs', () => {

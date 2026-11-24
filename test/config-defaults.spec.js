@@ -1,6 +1,6 @@
 'use strict';
 const assert = require('assert');
-const mockery = require('mockery');
+const mockRequire = require('./helpers/mock-require');
 const sinon = require('sinon');
 
 describe('config-defaults', () => {
@@ -8,20 +8,17 @@ describe('config-defaults', () => {
   let loggerMock;
 
   beforeEach(() => {
-    mockery.enable({ useCleanCache: true });
-
     fallbackMock = sinon.stub();
-    mockery.registerMock('connect-history-api-fallback', fallbackMock);
-
     loggerMock = sinon.stub();
-    mockery.registerMock('connect-logger', loggerMock);
 
-    mockery.registerAllowable('../lib/config-defaults');
+    mockRequire.enable({
+      'connect-history-api-fallback': fallbackMock,
+      'connect-logger': loggerMock
+    });
   });
 
   afterEach(() => {
-    mockery.deregisterAll();
-    mockery.disable();
+    mockRequire.disable();
   });
 
   it('should provide defaults', () => {

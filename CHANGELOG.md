@@ -9,6 +9,7 @@ All notable changes to the code will be documented in this file.
 - `--baseDir` on the command line now takes precedence over `server.baseDir` in `bs-config` (previously the config file won)
 - The npm package now only contains runtime files (`bin/`, `lib/`, `index.js`)
 - Declared supported Node.js versions: `engines.node` is `>=18`
+- Replaced the unmaintained `mockery` test dependency with a small `require` mocking helper
 
 ## 2.7.0
 
