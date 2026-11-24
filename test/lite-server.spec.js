@@ -148,4 +148,27 @@ describe('lite-server', () => {
     assert.deepEqual(configDefaultsMock.server.middleware, ['m1', 'm2'], 'defaults intact');
     assert.strictEqual(browserSyncMock.callCount, 2, 'new browsersync instance per call');
   });
+
+  it('should use baseDir from bs-config when no --baseDir is given', () => {
+    const liteServer = require('../lib/lite-server');
+    liteServer(
+      { console: consoleStubs, argv: [null, null, '-c', fixture('bs-config-object.js')] },
+      callbackStub
+    );
+
+    assert.strictEqual(browserSyncMethodStubs.init.firstCall.args[0].server.baseDir, 'from-config');
+  });
+
+  it('should let --baseDir override baseDir from bs-config', () => {
+    const liteServer = require('../lib/lite-server');
+    liteServer(
+      {
+        console: consoleStubs,
+        argv: [null, null, '-c', fixture('bs-config-object.js'), '--baseDir=from-cli']
+      },
+      callbackStub
+    );
+
+    assert.strictEqual(browserSyncMethodStubs.init.firstCall.args[0].server.baseDir, 'from-cli');
+  });
 });

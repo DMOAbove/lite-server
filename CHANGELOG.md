@@ -6,6 +6,7 @@ All notable changes to the code will be documented in this file.
 
 - Fixed a `bs-config.js` that fails to load (e.g. requires a module that is not installed) being silently ignored; the error is now thrown instead of falling back to defaults
 - Fixed repeated programmatic calls to `server()` sharing state: each call now gets its own browser-sync instance and its own copy of the default config
+- `--baseDir` on the command line now takes precedence over `server.baseDir` in `bs-config` (previously the config file won)
 
 ## 2.7.0
 

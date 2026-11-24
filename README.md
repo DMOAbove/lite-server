@@ -86,6 +86,8 @@ You can also provide custom path to your base directory `--baseDir=` run time op
 lite-server --baseDir="dist"
 ```
 
+`--baseDir` takes precedence over `server.baseDir` in your `bs-config` file.
+
 A more complicated example with modifications to the server middleware can be done with a `bs-config.js` file, which requires the `module.exports = { ... };` syntax:
 
 ```js
