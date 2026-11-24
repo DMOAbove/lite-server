@@ -39,7 +39,8 @@ describe('lite-server', () => {
       '../lib/lite-server',
       fixture('bs-config-object.js'),
       fixture('bs-config-function.js'),
-      fixture('bs-config-broken.js')
+      fixture('bs-config-broken.js'),
+      path.resolve('missing-config')
     ]);
   });
 
@@ -73,8 +74,6 @@ describe('lite-server', () => {
   });
 
   it('should handle missing bs-config', () => {
-    mockery.registerAllowable(path.resolve('missing-config'));
-
     const liteServer = require('../lib/lite-server');
     const bs = liteServer(
       {
@@ -127,5 +126,26 @@ describe('lite-server', () => {
     );
     assert.ok(consoleStubs.info.notCalled, 'does not report the config as missing');
     assert.ok(browserSyncMethodStubs.init.notCalled, 'does not start browsersync');
+  });
+
+  it('should not leak config or state between calls', () => {
+    browserSyncMethodStubs.init.yields();
+    const liteServer = require('../lib/lite-server');
+
+    liteServer(
+      { console: consoleStubs, argv: [null, null, '-c', fixture('bs-config-object.js')] },
+      callbackStub
+    );
+    liteServer(
+      { console: consoleStubs, argv: [null, null, '-c', 'missing-config'] },
+      callbackStub
+    );
+
+    const secondConfig = browserSyncMethodStubs.init.secondCall.args[0];
+    assert.ok(!('b' in secondConfig), 'overrides from first call not reused');
+    assert.deepEqual(secondConfig.server.middleware, ['m1', 'm2'], 'middleware not reused');
+    assert.ok(!('b' in configDefaultsMock), 'defaults module not mutated');
+    assert.deepEqual(configDefaultsMock.server.middleware, ['m1', 'm2'], 'defaults intact');
+    assert.strictEqual(browserSyncMock.callCount, 2, 'new browsersync instance per call');
   });
 });
