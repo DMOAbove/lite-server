@@ -2,6 +2,15 @@
 
 All notable changes to the code will be documented in this file.
 
+## 2.7.0
+
+- Updated `browser-sync` to 3.x and `connect-history-api-fallback` to 2.x
+- Updated `lodash` to 4.18
+- Updated dev tooling: ESLint 10 (flat config in `eslint.config.js`), Mocha 12, Sinon 22
+- Replaced `istanbul` with `c8` for test coverage
+- Fixed npm audit's reported security vulnerabilities in runtime dependencies
+- CI now tests on Node 20 and 22 (development requires Node 20.19+)
+
 ## 2.6.1
 
 - Fixed npm audit's reported security vulnerabilities

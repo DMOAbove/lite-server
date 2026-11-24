@@ -2,9 +2,7 @@
 
 Lightweight _development only_ node server that serves a web app, opens it in the browser, refreshes when html or javascript change, injects CSS changes using sockets, and has a fallback page when a route is not found.
 
-[![Dependency Status](https://david-dm.org/johnpapa/lite-server.svg)](https://david-dm.org/johnpapa/lite-server)
-[![npm version](https://badge.fury.io/js/lite-server.svg)](http://badge.fury.io/js/lite-server)
-[![Build Status](https://travis-ci.org/johnpapa/lite-server.svg?branch=main)](https://travis-ci.org/johnpapa/lite-server) [![Greenkeeper badge](https://badges.greenkeeper.io/johnpapa/lite-server.svg)](https://greenkeeper.io/)
+[![npm version](https://badge.fury.io/js/lite-server.svg)](https://badge.fury.io/js/lite-server)
 [![Build Status](https://dev.azure.com/johnpapa/lite-server/_apis/build/status/johnpapa.lite-server?branchName=main)](https://dev.azure.com/johnpapa/lite-server/_build/latest?definitionId=4&branchName=main&WT.mc_id=liteserver-github-jopapa)
 
 ## Why
@@ -39,7 +37,7 @@ With the above script entry, you can then start `lite-server` via:
 npm run dev
 ```
 
-Other options for running locally installed NPM binaries is discussed in this Stack Overflow question: [How to use package installed locally in node_modules](http://stackoverflow.com/q/9679932)
+Other options for running locally installed NPM binaries is discussed in this Stack Overflow question: [How to use package installed locally in node_modules](https://stackoverflow.com/q/9679932)
 
 ### Using on the fly
 
@@ -134,7 +132,7 @@ npm install connect-history-api-fallback --save-dev
 Error: Cannot find module 'connect-history-api-fallback'
 ```
 
-Another example: To remove one of the [default middlewares](./lib/config-defaults.js), such as `connect-logger`, you can set it's array index to `null`:
+Another example: To remove one of the [default middlewares](./lib/config-defaults.js), such as `connect-logger`, you can set its array index to `null`:
 
 ```js
 module.exports = {
@@ -146,20 +144,22 @@ module.exports = {
 };
 ```
 
-A list of the entire set of BrowserSync options can be found in its docs: <http://www.browsersync.io/docs/options/>
+A list of the entire set of BrowserSync options can be found in its docs: <https://browsersync.io/docs/options>
 
 ## Testing
 
 When using `lite-server` to run end to end tests, we may not want to log verbosely. We may also want to prevent the browser from opening. These options in the `bs-config.js` will silence all logging from `lite-server`:
 
 ```js
-  open: false
-  logLevel: "silent",
+module.exports = {
+  open: false,
+  logLevel: 'silent',
   server: {
     middleware: {
-      0: null
-    }
-  }
+      0: null,
+    },
+  },
+};
 ```
 
 ## Known Issues
@@ -168,11 +168,13 @@ CSS with Angular 2 is embedded thus even though BrowserSync detects the file cha
 
 ## Contributing
 
+Development requires Node.js 20.19 or newer (needed by the test and lint tooling: Mocha, ESLint and c8).
+
 1. Fork and clone it
 1. Install dependencies: `npm install`
 1. Create a feature branch: `git checkout -b new-feature`
 1. Commit changes: `git commit -am 'Added a feature'`
-1. Run static code analysis and unit tests: `npm test`
+1. Run static code analysis and unit tests with coverage: `npm test` (ESLint, then Mocha under c8)
 1. Push to the remote branch: `git push origin new-feature`
 1. Create a new [Pull Request](https://github.com/johnpapa/lite-server/pull/new/main)
 
