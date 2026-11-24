@@ -2,6 +2,10 @@
 
 All notable changes to the code will be documented in this file.
 
+## Unreleased
+
+- Fixed a `bs-config.js` that fails to load (e.g. requires a module that is not installed) being silently ignored; the error is now thrown instead of falling back to defaults
+
 ## 2.7.0
 
 - Updated `browser-sync` to 3.x and `connect-history-api-fallback` to 2.x

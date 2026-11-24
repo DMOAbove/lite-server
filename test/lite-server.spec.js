@@ -1,9 +1,10 @@
-/* global it, describe, beforeEach, afterEach */
 'use strict';
 const assert = require('assert');
 const mockery = require('mockery');
 const sinon = require('sinon');
 const path = require('path');
+
+const fixture = (name) => path.join(__dirname, 'fixtures', name);
 
 describe('lite-server', () => {
   let browserSyncMock;
@@ -31,7 +32,15 @@ describe('lite-server', () => {
 
     callbackStub = sinon.stub();
 
-    mockery.registerAllowables(['path', 'lodash', 'minimist', '../lib/lite-server']);
+    mockery.registerAllowables([
+      'path',
+      'lodash',
+      'minimist',
+      '../lib/lite-server',
+      fixture('bs-config-object.js'),
+      fixture('bs-config-function.js'),
+      fixture('bs-config-broken.js')
+    ]);
   });
 
   afterEach(() => {
@@ -43,18 +52,11 @@ describe('lite-server', () => {
     browserSyncMethodStubs.init.yields();
     configDefaultsMock.a = 1;
 
-    const bsConfigMock = {
-      b: 2,
-      server: {
-        middleware: {
-          0: null
-        }
-      }
-    };
-    mockery.registerMock(path.resolve('./bs-config'), bsConfigMock);
-
     const liteServer = require('../lib/lite-server');
-    const bs = liteServer({ console: consoleStubs, argv: [] }, callbackStub);
+    const bs = liteServer(
+      { console: consoleStubs, argv: [null, null, '-c', fixture('bs-config-object.js')] },
+      callbackStub
+    );
 
     assert.ok(bs.init, 'returns browsersync');
     assert.ok(
@@ -87,11 +89,11 @@ describe('lite-server', () => {
   });
 
   it('should support bs-config as function', () => {
-    const bsConfigMock = sinon.stub().returns({ b: 2 });
-    mockery.registerMock(path.resolve('./bs-config'), bsConfigMock);
-
     const liteServer = require('../lib/lite-server');
-    const bs = liteServer({ console: consoleStubs, argv: [] }, callbackStub);
+    const bs = liteServer(
+      { console: consoleStubs, argv: [null, null, '-c', fixture('bs-config-function.js')] },
+      callbackStub
+    );
     assert.ok(bs.init, 'returns browsersync');
 
     assert.ok(
@@ -103,6 +105,27 @@ describe('lite-server', () => {
       }),
       'configs were merged'
     );
-    assert.ok(bsConfigMock.calledWith(bs), 'browsersync passed into bsconfig fn');
+    assert.strictEqual(
+      require(fixture('bs-config-function.js')).receivedBs,
+      bs,
+      'browsersync passed into bsconfig fn'
+    );
+  });
+
+  it('should rethrow errors from loading an existing bs-config', () => {
+    const liteServer = require('../lib/lite-server');
+
+    assert.throws(
+      () =>
+        liteServer(
+          { console: consoleStubs, argv: [null, null, '-c', fixture('bs-config-broken.js')] },
+          callbackStub
+        ),
+      (err) =>
+        err.code === 'MODULE_NOT_FOUND' && (/lite-server-test-missing-module/).test(err.message),
+      'error from inside the config is not swallowed'
+    );
+    assert.ok(consoleStubs.info.notCalled, 'does not report the config as missing');
+    assert.ok(browserSyncMethodStubs.init.notCalled, 'does not start browsersync');
   });
 });

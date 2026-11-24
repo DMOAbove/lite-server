@@ -1,4 +1,3 @@
-/* global it, describe, beforeEach, afterEach */
 'use strict';
 const assert = require('assert');
 const mockery = require('mockery');
